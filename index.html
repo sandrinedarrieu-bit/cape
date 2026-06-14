@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Méthode CAPE — Diagnostic IA pour TPE & associations</title>
+<meta name="description" content="Évaluez votre maturité IA en 5 minutes avec la Méthode CAPE : Connaissance, Adoption, Processus, Engagement.">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #111118;
+  --ink-muted: #6b6b7a;
+  --ink-light: #a0a0b0;
+  --bg: #fafaf8;
+  --bg-card: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --blue: #185FA5;
+  --blue-light: #E6F1FB;
+  --blue-dark: #0C447C;
+
+  /* CAPE dimension colors */
+  --c-connaissance: #185FA5;
+  --c-adoption: #3B6D11;
+  --c-processus: #854F0B;
+  --c-engagement: #8A3FA0;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+/* NAV */
+nav {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.nav-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+.nav-back {
+  font-size: 13px; color: var(--ink-muted);
+  text-decoration: none; font-weight: 500;
+}
+.nav-back:hover { color: var(--ink); }
+
+/* HERO */
+.hero {
+  padding: 2.5rem 24px 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--blue-light); color: var(--blue-dark);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 12px; font-weight: 500; margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700; line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+.hero h1 span { color: var(--blue); }
+.hero-sub {
+  font-size: 16px; color: var(--ink-muted);
+  max-width: 540px; line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+/* CAPE legend */
+.cape-legend {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 0.5rem;
+}
+.cape-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+.cape-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-c { background: var(--c-connaissance); }
+.dot-a { background: var(--c-adoption); }
+.dot-p { background: var(--c-processus); }
+.dot-e { background: var(--c-engagement); }
+
+/* DIVIDER */
+.divider { height: 0.5px; background: var(--border); margin: 0 24px; }
+
+/* SECTION */
+.section { padding: 2rem 24px; max-width: 720px; margin: 0 auto; }
+
+/* PROGRESS */
+.progress-wrap {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 1.75rem;
+}
+.progress-track {
+  flex: 1; height: 6px; border-radius: 6px;
+  background: var(--border); overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 6px;
+  background: var(--blue);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-size: 12px; color: var(--ink-muted);
+  font-weight: 600; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* QUIZ CARD */
+.quiz-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 26px;
+}
+.quiz-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 14px;
+}
+.quiz-question {
+  font-size: 19px; font-weight: 600;
+  line-height: 1.4; margin-bottom: 20px;
+  color: var(--ink);
+}
+.quiz-options {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.quiz-option {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 14px; font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  width: 100%;
+  font-family: inherit;
+}
+.quiz-option:hover { border-color: var(--blue); background: var(--blue-light); }
+.quiz-option:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.quiz-option-score {
+  font-size: 11px; font-weight: 600;
+  color: var(--ink-light);
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.quiz-nav {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-top: 20px;
+}
+.quiz-back {
+  font-size: 13px; font-weight: 500;
+  color: var(--ink-muted);
+  background: none; border: none;
+  cursor: pointer; padding: 8px 4px;
+  font-family: inherit;
+  visibility: hidden;
+}
+.quiz-back.visible { visibility: visible; }
+.quiz-back:hover { color: var(--ink); }
+
+/* INTRO CARD */
+.intro-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  text-align: center;
+}
+.intro-card p {
+  font-size: 14px; color: var(--ink-muted);
+  margin-bottom: 24px;
+  max-width: 460px;
+  margin-left: auto; margin-right: auto;
+}
+.start-btn {
+  background: var(--blue); color: #fff;
+  font-size: 14px; font-weight: 600;
+  padding: 13px 28px; border-radius: 20px;
+  border: none; cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.start-btn:hover { background: var(--blue-dark); }
+.intro-meta {
+  font-size: 12px; color: var(--ink-light);
+  margin-top: 14px;
+}
+
+/* RESULTS */
+.results-hero {
+  text-align: center;
+  padding: 1rem 0 2rem;
+}
+.results-level-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 12px; font-weight: 500; margin-bottom: 1.25rem;
+}
+.results-title {
+  font-size: clamp(26px, 5vw, 36px);
+  font-weight: 700; letter-spacing: -0.5px;
+  margin-bottom: 0.75rem;
+}
+.results-score {
+  font-size: 14px; color: var(--ink-muted);
+}
+.results-score strong {
+  color: var(--ink); font-weight: 700;
+  font-size: 18px;
+}
+
+/* RADAR */
+.radar-wrap {
+  display: flex; justify-content: center;
+  padding: 1rem 0 2rem;
+}
+.radar-svg { width: 100%; max-width: 320px; height: auto; }
+.radar-axis-label {
+  font-size: 11px; font-weight: 600;
+  fill: var(--ink-muted);
+}
+.radar-axis-value {
+  font-size: 13px; font-weight: 700;
+}
+
+/* DIMENSION BREAKDOWN */
+.dims-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.dim-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.dim-card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.dim-card-name {
+  font-size: 12px; font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+.dim-card-score {
+  font-size: 20px; font-weight: 700; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.dim-card-bar-track {
+  height: 5px; border-radius: 5px;
+  background: var(--border); overflow: hidden;
+}
+.dim-card-bar-fill {
+  height: 100%; border-radius: 5px;
+  transition: width 0.6s ease;
+}
+
+/* RESULT MESSAGE */
+.result-message {
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 1.5rem;
+}
+.result-message p {
+  font-size: 14px; line-height: 1.8;
+}
+.result-message p + p { margin-top: 10px; }
+
+/* CTA */
+.cta-strip {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  background: var(--ink);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+}
+.cta-text { color: #fff; }
+.cta-title { font-size: 16px; font-weight: 600; margin-bottom: 3px; }
+.cta-sub { font-size: 13px; color: rgba(255,255,255,0.6); }
+.cta-btn {
+  background: #fff; color: var(--ink);
+  font-size: 13px; font-weight: 600;
+  padding: 10px 20px; border-radius: 20px;
+  text-decoration: none; flex-shrink: 0;
+  white-space: nowrap;
+}
+.cta-btn:hover { background: var(--blue-light); color: var(--blue); }
+
+.restart-link {
+  display: block; text-align: center;
+  font-size: 13px; color: var(--ink-muted);
+  text-decoration: none; margin-top: 1.25rem;
+  font-weight: 500;
+}
+.restart-link:hover { color: var(--ink); }
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 2rem 24px;
+  font-size: 12px;
+  color: var(--ink-light);
+}
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeUp 0.35s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in { animation: none; }
+  .progress-fill, .dim-card-bar-fill { transition: none; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 26px; }
+  .dims-grid { grid-template-columns: 1fr; }
+  .quiz-card { padding: 22px 18px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-name">Sandrine</div>
+  <a href="https://sandrine-portfolio.vercel.app" class="nav-back">← Retour au portfolio</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">📊 Méthode CAPE — Diagnostic IA</div>
+  <h1>Quelle est votre <span>maturité IA</span> aujourd'hui ?</h1>
+  <p class="hero-sub">Un diagnostic gratuit en 12 questions pour situer votre TPE ou association sur 4 dimensions : Connaissance, Adoption, Processus, Engagement — et recevoir des recommandations concrètes.</p>
+  <div class="cape-legend">
+    <span class="cape-pill"><span class="cape-dot dot-c"></span>Connaissance</span>
+    <span class="cape-pill"><span class="cape-dot dot-a"></span>Adoption</span>
+    <span class="cape-pill"><span class="cape-dot dot-p"></span>Processus</span>
+    <span class="cape-pill"><span class="cape-dot dot-e"></span>Engagement</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+
+  <!-- INTRO SCREEN -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-card">
+      <p>Répondez à 12 questions courtes (3 par dimension). Vous obtiendrez immédiatement votre profil CAPE sous forme de graphique, votre niveau de maturité, et des pistes d'action adaptées.</p>
+      <button class="start-btn" onclick="startQuiz()">Commencer le diagnostic →</button>
+      <div class="intro-meta">~3 minutes · Aucune inscription requise</div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">Question 1 / 12</div>
+    </div>
+    <div class="quiz-card fade-in" id="quiz-card">
+      <div class="quiz-eyebrow" id="quiz-eyebrow"></div>
+      <div class="quiz-question" id="quiz-question"></div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-nav">
+        <button class="quiz-back" id="quiz-back" onclick="goBack()">← Question précédente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="screen-results">
+    <div class="results-hero fade-in">
+      <div class="results-level-tag" id="results-level-tag"></div>
+      <div class="results-title" id="results-title"></div>
+      <div class="results-score">Score global : <strong id="results-total"></strong> / 48</div>
+    </div>
+
+    <div class="radar-wrap fade-in">
+      <svg class="radar-svg" id="radar-svg" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="dims-grid fade-in" id="dims-grid"></div>
+
+    <div class="result-message fade-in" id="result-message"></div>
+
+    <div class="cta-strip fade-in">
+      <div class="cta-text">
+        <div class="cta-title">Aller plus loin avec un diagnostic complet</div>
+        <div class="cta-sub">19 questions, rapport détaillé par email + recommandations personnalisées.</div>
+      </div>
+      <a href="https://tally.so/r/68PxQB" target="_blank" class="cta-btn">Faire le diagnostic complet →</a>
+    </div>
+
+    <a href="#" class="restart-link" onclick="restartQuiz(); return false;">↺ Refaire le test</a>
+  </div>
+
+</div>
+
+<footer>
+  Méthode CAPE — Connaissance, Adoption, Processus, Engagement · Sandrine, Product Builder No-Code & IA · 2026
+</footer>
+
+<script>
+// ============ CAPE QUIZ DATA ============
+// 12 questions, 3 per dimension, each answer scores 1-4 → max 12 per dimension, 48 total
+
+const DIMENSIONS = {
+  C: { name: "Connaissance", color: "#185FA5", light: "#E6F1FB" },
+  A: { name: "Adoption",     color: "#3B6D11", light: "#EAF3DE" },
+  P: { name: "Processus",    color: "#854F0B", light: "#FAEEDA" },
+  E: { name: "Engagement",   color: "#8A3FA0", light: "#F5EAFB" }
+};
+
+const QUESTIONS = [
+  // CONNAISSANCE
+  {
+    dim: "C",
+    text: "Globalement, comment décririez-vous votre compréhension des outils d'IA disponibles aujourd'hui (ChatGPT, Claude, etc.) ?",
+    options: [
+      { label: "Je n'en ai jamais utilisé et je ne sais pas vraiment ce que c'est", score: 1 },
+      { label: "J'en ai entendu parler et testé un peu, sans plus", score: 2 },
+      { label: "Je les utilise occasionnellement pour des tâches simples", score: 3 },
+      { label: "Je comprends leurs usages et limites, et je les utilise régulièrement", score: 4 }
+    ]
+  },
+  {
+    dim: "C",
+    text: "Savez-vous identifier, parmi les tâches de votre structure, celles qui pourraient être automatisées ou assistées par l'IA ?",
+    options: [
+      { label: "Pas du tout, je ne sais pas par où commencer", score: 1 },
+      { label: "J'ai une vague idée mais rien de concret", score: 2 },
+      { label: "J'ai identifié 1 ou 2 tâches potentielles", score: 3 },
+      { label: "J'ai une liste claire de tâches à automatiser, priorisée", score: 4 }
+    ]
+  },
+  {
+    dim: "C",
+    text: "Votre équipe (ou vous-même) a-t-elle déjà suivi une formation ou sensibilisation sur l'IA ?",
+    options: [
+      { label: "Non, jamais", score: 1 },
+      { label: "Non, mais c'est prévu / envisagé", score: 2 },
+      { label: "Oui, une initiation ponctuelle", score: 3 },
+      { label: "Oui, une vraie montée en compétence continue", score: 4 }
+    ]
+  },
+
+  // ADOPTION
+  {
+    dim: "A",
+    text: "À quelle fréquence utilisez-vous concrètement un outil d'IA dans votre activité ?",
+    options: [
+      { label: "Jamais", score: 1 },
+      { label: "Quelques fois par mois, par curiosité", score: 2 },
+      { label: "Plusieurs fois par semaine", score: 3 },
+      { label: "Quotidiennement, ça fait partie de mes habitudes", score: 4 }
+    ]
+  },
+  {
+    dim: "A",
+    text: "Comment l'équipe (salariés, bénévoles, collègues) perçoit-elle l'arrivée de ces outils ?",
+    options: [
+      { label: "Méfiance ou rejet assez net", score: 1 },
+      { label: "Curiosité timide, mais peu d'usage réel", score: 2 },
+      { label: "Plutôt favorable, quelques personnes motrices", score: 3 },
+      { label: "Adhésion large, l'équipe est demandeuse", score: 4 }
+    ]
+  },
+  {
+    dim: "A",
+    text: "Avez-vous déjà testé un outil d'IA sur un vrai cas d'usage de votre structure (et pas juste pour 's'amuser') ?",
+    options: [
+      { label: "Non, jamais essayé en conditions réelles", score: 1 },
+      { label: "Un essai isolé, sans suite", score: 2 },
+      { label: "Quelques cas d'usage testés avec des résultats encourageants", score: 3 },
+      { label: "Plusieurs usages adoptés durablement par l'équipe", score: 4 }
+    ]
+  },
+
+  // PROCESSUS
+  {
+    dim: "P",
+    text: "Vos processus internes (suivi clients, dossiers, communication...) sont-ils documentés et structurés ?",
+    options: [
+      { label: "Pas vraiment, tout est dans la tête des gens", score: 1 },
+      { label: "Partiellement, sur certains sujets seulement", score: 2 },
+      { label: "Oui pour les processus principaux", score: 3 },
+      { label: "Oui, documentés et régulièrement mis à jour", score: 4 }
+    ]
+  },
+  {
+    dim: "P",
+    text: "Utilisez-vous des outils numériques pour fluidifier vos processus (formulaires, automatisations, bases de données) ?",
+    options: [
+      { label: "Non, tout est en papier ou par email/téléphone", score: 1 },
+      { label: "Quelques outils basiques (Excel, partage de fichiers)", score: 2 },
+      { label: "Des outils dédiés mais peu connectés entre eux", score: 3 },
+      { label: "Des outils connectés et automatisés sur les tâches répétitives", score: 4 }
+    ]
+  },
+  {
+    dim: "P",
+    text: "Si une tâche répétitive était automatisée demain, votre organisation serait-elle prête à l'intégrer dans son fonctionnement ?",
+    options: [
+      { label: "Non, ça bousculerait trop nos habitudes actuelles", score: 1 },
+      { label: "Ça demanderait un gros effort d'adaptation", score: 2 },
+      { label: "Oui, avec un accompagnement au changement", score: 3 },
+      { label: "Oui, sans difficulté particulière", score: 4 }
+    ]
+  },
+
+  // ENGAGEMENT
+  {
+    dim: "E",
+    text: "La direction (vous-même, ou vos responsables) considère-t-elle la transformation numérique/IA comme une priorité ?",
+    options: [
+      { label: "Pas du tout, ce n'est pas un sujet pour nous", score: 1 },
+      { label: "C'est un sujet 'pour plus tard'", score: 2 },
+      { label: "C'est dans nos réflexions, sans plan concret", score: 3 },
+      { label: "C'est une priorité affichée avec des moyens dédiés", score: 4 }
+    ]
+  },
+  {
+    dim: "E",
+    text: "Avez-vous (ou prévoyez-vous) un budget, même modeste, dédié aux outils numériques/IA ?",
+    options: [
+      { label: "Non, et ce n'est pas envisagé", score: 1 },
+      { label: "Non, mais on pourrait y réfléchir", score: 2 },
+      { label: "Un petit budget existe ou est envisagé", score: 3 },
+      { label: "Un budget dédié est déjà alloué", score: 4 }
+    ]
+  },
+  {
+    dim: "E",
+    text: "Sur les 12 prochains mois, quel est votre niveau d'engagement pour avancer concrètement sur le sujet IA ?",
+    options: [
+      { label: "Faible, ce n'est pas le moment pour nous", score: 1 },
+      { label: "Modéré, on verra selon les opportunités", score: 2 },
+      { label: "Bon, on veut avancer mais sans précipitation", score: 3 },
+      { label: "Fort, c'est une priorité avec un calendrier engagé", score: 4 }
+    ]
+  }
+];
+
+// ============ MATURITY LEVELS ============
+const LEVELS = [
+  {
+    min: 12, max: 21,
+    name: "Découverte",
+    color: "#854F0B", light: "#FAEEDA",
+    title: "Niveau Découverte",
+    messages: [
+      "Vous êtes au tout début du chemin — et c'est très bien ainsi. La majorité des structures comme la vôtre en sont au même point : l'IA reste un sujet flou, peu testé, et pas encore relié à vos besoins concrets.",
+      "La priorité n'est pas de 'tout faire d'un coup', mais de démystifier l'IA à travers 1 ou 2 cas d'usage simples et utiles au quotidien, pour construire la confiance avant d'aller plus loin."
+    ]
+  },
+  {
+    min: 22, max: 30,
+    name: "Initiation",
+    color: "#185FA5", light: "#E6F1FB",
+    title: "Niveau Initiation",
+    messages: [
+      "Des premiers pas ont été faits : quelques outils testés, une équipe pas totalement fermée au sujet. Mais ces usages restent ponctuels et ne sont pas encore ancrés dans vos habitudes de travail.",
+      "L'enjeu maintenant est de transformer ces essais isolés en usages réguliers, en s'appuyant sur des processus déjà identifiables, pour que l'IA devienne un réflexe plutôt qu'une exception."
+    ]
+  },
+  {
+    min: 31, max: 39,
+    name: "Intégration",
+    color: "#3B6D11", light: "#EAF3DE",
+    title: "Niveau Intégration",
+    messages: [
+      "Votre structure a dépassé le stade de l'expérimentation : l'IA fait déjà partie du quotidien sur certaines tâches, les processus commencent à intégrer ces nouveaux outils, et l'équipe est globalement réceptive.",
+      "La marge de progression se situe dans la consolidation : automatiser davantage de tâches répétitives, formaliser les processus qui fonctionnent, et élargir l'adoption à l'ensemble de l'équipe."
+    ]
+  },
+  {
+    min: 40, max: 48,
+    name: "Transformation",
+    color: "#8A3FA0", light: "#F5EAFB",
+    title: "Niveau Transformation",
+    messages: [
+      "Votre structure a une longueur d'avance : compréhension solide, usages quotidiens ancrés, processus structurés et soutenus par la direction. L'IA n'est plus un sujet à part, elle fait partie de votre fonctionnement.",
+      "À ce niveau, l'enjeu devient stratégique : optimiser finement vos automatisations, partager votre expérience (en interne ou avec votre écosystème), et anticiper les prochains usages avant qu'ils ne deviennent indispensables."
+    ]
+  }
+];
+
+function getLevel(total) {
+  return LEVELS.find(l => total >= l.min && total <= l.max) || LEVELS[0];
+}
+
+// ============ STATE ============
+let currentQuestion = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+const screenIntro = document.getElementById('screen-intro');
+const screenQuiz = document.getElementById('screen-quiz');
+const screenResults = document.getElementById('screen-results');
+
+function showScreen(el) {
+  [screenIntro, screenQuiz, screenResults].forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function startQuiz() {
+  currentQuestion = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  showScreen(screenQuiz);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQuestion];
+  const dim = DIMENSIONS[q.dim];
+
+  // progress
+  const pct = (currentQuestion / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent =
+    `Question ${currentQuestion + 1} / ${QUESTIONS.length}`;
+
+  // eyebrow
+  const eyebrow = document.getElementById('quiz-eyebrow');
+  eyebrow.textContent = dim.name;
+  eyebrow.style.color = dim.color;
+
+  // question
+  document.getElementById('quiz-question').textContent = q.text;
+
+  // options
+  const optionsEl = document.getElementById('quiz-options');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.type = 'button';
+    btn.innerHTML = `<span>${opt.label}</span>`;
+    btn.addEventListener('click', () => selectAnswer(opt.score));
+    optionsEl.appendChild(btn);
+  });
+
+  // back button
+  const backBtn = document.getElementById('quiz-back');
+  if (currentQuestion > 0) {
+    backBtn.classList.add('visible');
+  } else {
+    backBtn.classList.remove('visible');
+  }
+
+  // fade-in
+  const card = document.getElementById('quiz-card');
+  card.classList.remove('fade-in');
+  requestAnimationFrame(() => card.classList.add('fade-in'));
+}
+
+function selectAnswer(score) {
+  answers[currentQuestion] = score;
+  if (currentQuestion < QUESTIONS.length - 1) {
+    currentQuestion++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function goBack() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    renderQuestion();
+  }
+}
+
+function restartQuiz() {
+  showScreen(screenIntro);
+}
+
+// ============ RESULTS ============
+function computeScores() {
+  const scores = { C: 0, A: 0, P: 0, E: 0 };
+  QUESTIONS.forEach((q, i) => {
+    scores[q.dim] += answers[i] || 0;
+  });
+  return scores;
+}
+
+function showResults() {
+  const scores = computeScores();
+  const total = scores.C + scores.A + scores.P + scores.E;
+  const level = getLevel(total);
+
+  // header
+  const levelTag = document.getElementById('results-level-tag');
+  levelTag.textContent = `🎯 ${level.title}`;
+  levelTag.style.background = level.light;
+  levelTag.style.color = level.color;
+
+  const title = document.getElementById('results-title');
+  title.textContent = levelDescriptionTitle(level.name);
+  title.style.color = 'var(--ink)';
+
+  document.getElementById('results-total').textContent = total;
+
+  // radar
+  renderRadar(scores);
+
+  // dimension cards
+  const dimsGrid = document.getElementById('dims-grid');
+  dimsGrid.innerHTML = '';
+  Object.keys(DIMENSIONS).forEach(key => {
+    const dim = DIMENSIONS[key];
+    const score = scores[key];
+    const pct = (score / 12) * 100;
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.innerHTML = `
+      <div class="dim-card-head">
+        <span class="cape-dot" style="background:${dim.color}"></span>
+        <span class="dim-card-name">${dim.name}</span>
+      </div>
+      <div class="dim-card-score">${score} <span style="font-size:12px;color:var(--ink-light);font-weight:500;">/ 12</span></div>
+      <div class="dim-card-bar-track" style="margin-top:8px;">
+        <div class="dim-card-bar-fill" style="width:0%;background:${dim.color}"></div>
+      </div>
+    `;
+    dimsGrid.appendChild(card);
+    requestAnimationFrame(() => {
+      card.querySelector('.dim-card-bar-fill').style.width = pct + '%';
+    });
+  });
+
+  // message
+  const msgEl = document.getElementById('result-message');
+  msgEl.style.background = level.light;
+  msgEl.innerHTML = level.messages.map(m => `<p style="color:${level.color}">${m}</p>`).join('');
+
+  showScreen(screenResults);
+}
+
+function levelDescriptionTitle(name) {
+  const titles = {
+    "Découverte": "Vous démarrez votre exploration de l'IA",
+    "Initiation": "Vous avez posé vos premières bases",
+    "Intégration": "L'IA fait déjà partie de votre quotidien",
+    "Transformation": "Votre structure est en avance sur son temps"
+  };
+  return titles[name] || name;
+}
+
+// ============ RADAR CHART ============
+function renderRadar(scores) {
+  const svg = document.getElementById('radar-svg');
+  const size = 320;
+  const center = size / 2;
+  const maxRadius = 110;
+  const maxValue = 12;
+  const axes = ['C', 'A', 'P', 'E'];
+  const labels = { C: 'Connaissance', A: 'Adoption', P: 'Processus', E: 'Engagement' };
+
+  // angle for each axis (starting at top, going clockwise)
+  const angleStep = (Math.PI * 2) / axes.length;
+  const angleFor = (i) => -Math.PI / 2 + i * angleStep;
+
+  function pointAt(i, value) {
+    const r = (value / maxValue) * maxRadius;
+    const angle = angleFor(i);
+    return {
+      x: center + r * Math.cos(angle),
+      y: center + r * Math.sin(angle)
+    };
+  }
+
+  let svgContent = '';
+
+  // grid rings
+  [0.25, 0.5, 0.75, 1].forEach(frac => {
+    const pts = axes.map((_, i) => {
+      const p = pointAt(i, maxValue * frac);
+      return `${p.x},${p.y}`;
+    }).join(' ');
+    svgContent += `<polygon points="${pts}" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1" />`;
+  });
+
+  // axis lines
+  axes.forEach((_, i) => {
+    const p = pointAt(i, maxValue);
+    svgContent += `<line x1="${center}" y1="${center}" x2="${p.x}" y2="${p.y}" stroke="rgba(0,0,0,0.08)" stroke-width="1" />`;
+  });
+
+  // data polygon
+  const dataPts = axes.map((key, i) => {
+    const p = pointAt(i, scores[key]);
+    return `${p.x},${p.y}`;
+  }).join(' ');
+  svgContent += `<polygon points="${dataPts}" fill="rgba(24,95,165,0.15)" stroke="#185FA5" stroke-width="2" stroke-linejoin="round" />`;
+
+  // data points
+  axes.forEach((key, i) => {
+    const p = pointAt(i, scores[key]);
+    svgContent += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${DIMENSIONS[key].color}" />`;
+  });
+
+  // axis labels + values
+  axes.forEach((key, i) => {
+    const labelP = pointAt(i, maxValue + 2.6);
+    const valueP = pointAt(i, maxValue * 1.0);
+    let anchor = 'middle';
+    if (Math.abs(labelP.x - center) > 5) {
+      anchor = labelP.x > center ? 'start' : 'end';
+    }
+    let dy = 0;
+    if (labelP.y < center - 5) dy = -2;
+    if (labelP.y > center + 5) dy = 12;
+
+    svgContent += `<text x="${labelP.x}" y="${labelP.y + dy}" text-anchor="${anchor}" class="radar-axis-label">${labels[key]}</text>`;
+
+    const valP = pointAt(i, scores[key]);
+    let vdx = 0, vdy = -10;
+    if (key === 'A') vdy = 18;
+    if (key === 'C') vdy = -10;
+    if (key === 'P') { vdx = -16; vdy = 4; }
+    if (key === 'E') { vdx = 16; vdy = 4; }
+    svgContent += `<text x="${valP.x + vdx}" y="${valP.y + vdy}" text-anchor="middle" class="radar-axis-value" style="fill:${DIMENSIONS[key].color}">${scores[key]}</text>`;
+  });
+
+  svg.innerHTML = svgContent;
+}
+</script>
+
+</body>
+</html>
